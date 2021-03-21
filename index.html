@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PHOTOFRAME</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+</head>
+<body>
+	<div id="photo-frame-wrapper">
+		<img id="photo-frame" src=""/>
+	</div>
+	<script>
+		(() => {
+
+			function refreshImage() {
+				axios.get(`http://localhost:3123/`).then((response) => {
+					console.log(response.data);
+					const imageUrl = response.data;
+
+					if (!response.data) {
+						return;
+					}
+
+					imageContainer.src = response.data + "=w2048";
+				})
+			}
+
+			const imageContainer = document.querySelector('#photo-frame');
+			
+			refreshImage();
+
+
+		setInterval(() => {
+			refreshImage();
+		}, 10 * 1000);
+		})();
+	</script>
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			background: black;
+		}
+
+		#photo-frame-wrapper {
+			width: 100vw;
+			height: 100vh;
+		}
+
+		#photo-frame {
+			width: 100vw;
+			height: 100vh;
+			object-fit: cover;
+		}
+	</style>
+</body>
+</html>
