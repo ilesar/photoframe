@@ -6,32 +6,42 @@
 </head>
 <body>
 	<div id="photo-frame-wrapper">
+		<img id="new-photo" src=""/>
 		<img id="photo-frame" src=""/>
 	</div>
 	<script>
 		(() => {
+			const photoFrame = document.querySelector('#photo-frame');
+			const newPhoto = document.querySelector('#new-photo');
+			let photoDuration = 60;
 
 			function refreshImage() {
 				axios.get(`http://localhost:3123/`).then((response) => {
 					console.log(response.data);
-					const imageUrl = response.data;
+					let imageUrl = response.data;
 
-					if (!response.data) {
+					if (!imageUrl) {
 						return;
 					}
 
-					imageContainer.src = response.data + "=w2048";
+					imageUrl += "=w2048";
+
+					newPhoto.src = imageUrl;
+					photoFrame.classList.add('transparent');
+
+					setTimeout(() => {
+						photoFrame.src = imageUrl;
+						photoFrame.classList.remove('transparent');
+					}, 5000);
 				})
 			}
 
-			const imageContainer = document.querySelector('#photo-frame');
-			
 			refreshImage();
 
 
 		setInterval(() => {
 			refreshImage();
-		}, 5 * 60 * 1000);
+		}, (photoDuration + 5) * 1000);
 		})();
 	</script>
 	<style type="text/css">
@@ -47,6 +57,23 @@
 		}
 
 		#photo-frame {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			object-fit: cover;
+			transition: opacity 3s ease-in-out;
+		}
+
+		#photo-frame.transparent {
+			opacity: 0;
+		}
+
+		#new-photo {
+			position: absolute;
+			top: 0;
+			left: 0;
 			width: 100vw;
 			height: 100vh;
 			object-fit: cover;

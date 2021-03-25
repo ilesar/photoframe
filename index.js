@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 
+let index = 0;
+
 app.use(function(req, res, next) {
   const origin = req.headers.origin;
   if(origin){
@@ -18,7 +20,7 @@ app.get('/', async function(request, response) {
     response.json(result);
   }
   catch(e) {
-    response.status(500) 
+    response.status(500)
   }
 });
 
@@ -37,7 +39,7 @@ function extractPhotos(content) {
     while (match = regex.exec(content)) {
         links.add(match[1]);
     }
- 
+
     return Array.from(links);
 }
 
@@ -45,11 +47,17 @@ async function getAlbum(id) {
     console.log('Updating photos...');
     const response = await axios.get(`https://photos.app.goo.gl/${id}`)
     console.log('UPDATE COMPLETED!');
-    return response.data 
+    return response.data
 }
 
 function printRandomImage() {
-    const randomImageUrl = PHOTO_LINKS[Math.floor(Math.random() * PHOTO_LINKS.length)]
+    const randomImageUrl = PHOTO_LINKS[index];
+    index++;
+
+    if (index >= PHOTO_LINKS.length) {
+        index = 0;
+    }
+
     return randomImageUrl;
 }
 
